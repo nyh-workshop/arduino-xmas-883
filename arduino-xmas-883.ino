@@ -30,8 +30,8 @@ uint32_t fill_audio_buffer = 0;
 uint32_t t0, t1 = 0; // Time taken for MicroDexed engine to generate samples!
 const uint16_t audio_block_time_us = 1000000 / (SAMPLE_RATE / AUDIO_BLOCK_SAMPLES);
 
-const uint32_t MAX_STUTTERS_PER_SECOND = 128;
-uint32_t numberOfStuttersPerSecond = 0;
+const uint32_t MAX_STUTTERS_PER_SECOND = 16;
+volatile uint32_t numberOfStuttersPerSecond = 0;
 const bool STUTTER_REBOOT = true;
 
 static enum { S_IDLE,
@@ -123,6 +123,7 @@ void nextSong(String midiFileName) {
   // to prevent notes from going out of sync at next song!!
   dexed->notesOff();
   dexed->doRefreshVoice();
+  dexed->panic();
 
   int err = SMF.load(midiFileName.c_str());
   if (midiFileName == "NoMoreMidiFileInDir") {
